@@ -5,9 +5,9 @@ const helpers = require('../libs/helpers');
 
 
 //TRAER TODOS
-export const readAllUsers = async(req, res) => {
+export const readAlldetalle = async(req, res) => {
     try {
-        const response = await pool.query('select *from usuario');
+        const response = await pool.query('select *from detalle');
         return res.status(200).json(response.rows);
     } catch (e) {
         console.log(e);
@@ -15,11 +15,13 @@ export const readAllUsers = async(req, res) => {
     }
 }
 
+
+
 //TRAER UNO POR ID
-export const readUser = async(req, res) => {
+export const readDetalle = async(req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const response = await pool.query('select *from usuario where idpersona=$1', [id]);
+        const response = await pool.query('select *from detalle where iddetalle=$1', [id]);
         return res.status(200).json(response.rows);
     } catch (e) {
         console.log(e);
@@ -29,10 +31,10 @@ export const readUser = async(req, res) => {
 
 
 //ELIMINAR
-export const delUser = async(req, res) => {
+export const deleteDetalle = async(req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const response = await pool.query('delete from usuario where idpersona=$1', [id]);
+        const response = await pool.query('delete from detalle where iddetalle=$1', [id]);
         return res.status(200).json(
             `Usuario ${ id } Se ha eliminado correctamente...!`);
     } catch (e) {
@@ -43,11 +45,11 @@ export const delUser = async(req, res) => {
 
 
 //MODIFICAR
-export const updateUser = async(req, res) => {
+export const updateDetalle = async(req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const { nombres, correo, telefono } = req.body;
-        await pool.query('update usuario set nombres=$1, correo=$2, telefono=$3 where idpersona=$4', [nombres, correo, telefono, id]);
+        const { idproducto, idventa, precio, cantidad } = req.body;
+        await pool.query('update detalle set idproducto=$1, idventa=$2, precio=$3, cantidad=$4, where idventa=$5', [idproducto, idventa, precio, cantidad, id]);
         return res.status(200).json(
             `Usuario ${ id } modificado correctamente...!`);
     } catch (e) {
@@ -56,17 +58,20 @@ export const updateUser = async(req, res) => {
     }
 }
 
+
+
+
 //CREAR
-export const createUser = async(req, res) => {
+export const createDetalle = async(req, res) => {
     try {
-        const { nombres, correo, telefono } = req.body;
+        const { idproducto, idventa, precio, cantidad } = req.body;
 
-        //ENCRYPTAMOS
-        const correoElectronico = await helpers.encryptPassword(correo);
+        // //ENCRYPTAMOS
+        // const correoElectronico = await helpers.encryptPassword(correo);
 
-        await pool.query('insert into usuario (nombres, correo, telefono) values($1,$2,$3)', [nombres, correoElectronico, telefono]);
+        await pool.query('insert into venta (idproducto, idventa, precio, cantidad) values($1,$2,$3,$4)', [idproducto, idventa, precio, cantidad]);
         return res.status(200).json(
-            `Usuario ${ nombres } creado correctamente...!`);
+            `Usuario ${ numerodoc } creado correctamente...!`);
     } catch (e) {
         console.log(e);
         return res.status(500).json(e);
