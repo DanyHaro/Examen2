@@ -1,4 +1,6 @@
 import { pool } from '../database'
+const helpers = require('../libs/helpers');
+
 
 
 export const readAllUsers = async(req, res) => {
@@ -46,7 +48,11 @@ export const updateUser = async(req, res) => {
 export const createUser = async(req, res) => {
     try {
         const { nombres, correo, telefono } = req.body;
-        await pool.query('insert into usuario (nombres, correo, telefono) values($1,$2,$3)', [nombres, correo, telefono]);
+
+        //ENCRYPTAMOS
+        const correoElectronico = await helpers.encryptPassword(correo);
+
+        await pool.query('insert into usuario (nombres, correo, telefono) values($1,$2,$3)', [nombres, correoElectronico, telefono]);
         return res.status(200).json(
             `Usuario ${ nombres } creado correctamente...!`);
     } catch (e) {
