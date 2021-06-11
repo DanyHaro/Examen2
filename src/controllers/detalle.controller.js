@@ -21,7 +21,8 @@ export const readAlldetalle = async(req, res) => {
 export const readDetalle = async(req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const response = await pool.query('select *from detalle where iddetalle=$1', [id]);
+        const response = await pool.query('SELECT ve.idventa, ve.numerodoc, det.precio,det.cantidad FROM venta ve, detalle det WHERE ve.idventa =$1 AND det.idventa=$1', [id]);
+
         return res.status(200).json(response.rows);
     } catch (e) {
         console.log(e);
@@ -49,9 +50,9 @@ export const updateDetalle = async(req, res) => {
     try {
         const id = parseInt(req.params.id);
         const { idproducto, idventa, precio, cantidad } = req.body;
-        await pool.query('update detalle set idproducto=$1, idventa=$2, precio=$3, cantidad=$4, where idventa=$5', [idproducto, idventa, precio, cantidad, id]);
+        await pool.query('update detalle set idproducto=$1, idventa=$2, precio=$3, cantidad=$4 where iddetalle=$5', [idproducto, idventa, precio, cantidad, id]);
         return res.status(200).json(
-            `Usuario ${ id } modificado correctamente...!`);
+            `Detalle Modificado...!`);
     } catch (e) {
         console.log(e);
         return res.status(500).json('Internal Server error...!');
@@ -65,13 +66,9 @@ export const updateDetalle = async(req, res) => {
 export const createDetalle = async(req, res) => {
     try {
         const { idproducto, idventa, precio, cantidad } = req.body;
-
-        // //ENCRYPTAMOS
-        // const correoElectronico = await helpers.encryptPassword(correo);
-
-        await pool.query('insert into venta (idproducto, idventa, precio, cantidad) values($1,$2,$3,$4)', [idproducto, idventa, precio, cantidad]);
+        await pool.query('insert into detalle (idproducto, idventa, precio, cantidad) values($1,$2,$3,$4)', [idproducto, idventa, precio, cantidad]);
         return res.status(200).json(
-            `Usuario ${ numerodoc } creado correctamente...!`);
+            `Detalle Registrado...!`);
     } catch (e) {
         console.log(e);
         return res.status(500).json(e);

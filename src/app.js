@@ -22,7 +22,7 @@ app.use(morgan('dev'));
 //     res.send('Welcome to Node.JS...!');
 // });
 
-app.use('/ventas', ventasRoutes);
+app.use('/venta', ventasRoutes);
 app.use('/detalle', detalleRoutes);
 
 app.use('/usuario', usuarioRoutes);

@@ -21,7 +21,7 @@ export const readAllventas = async(req, res) => {
 export const readVenta = async(req, res) => {
     try {
         const id = parseInt(req.params.id);
-        const response = await pool.query('select *from venta where idventa=$1', [id]);
+        const response = await pool.query('SELECT ve.numerodoc, ve.fecha,cli.nombres,usu.username FROM venta ve, cliente cli, usuario usu WHERE ve.idventa = $1 AND ve.idcliente = cli.idcliente AND ve.idusuario = usu.idusuario', [id]);
         return res.status(200).json(response.rows);
     } catch (e) {
         console.log(e);
@@ -65,10 +65,6 @@ export const updateVenta = async(req, res) => {
 export const createVenta = async(req, res) => {
     try {
         const { idcliente, idusuario, fecha, tipodoc, numerodoc } = req.body;
-
-        // //ENCRYPTAMOS
-        // const correoElectronico = await helpers.encryptPassword(correo);
-
         await pool.query('insert into venta (idcliente, idusuario, fecha, tipodoc, numerodoc) values($1,$2,$3,$4,$5)', [idcliente, idusuario, fecha, tipodoc, numerodoc]);
         return res.status(200).json(
             `Usuario ${ numerodoc } creado correctamente...!`);
